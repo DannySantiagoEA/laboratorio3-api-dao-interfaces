@@ -1,0 +1,6 @@
+# Archivo de configuracion de conexion JDBC - Laboratorio 3 Interfaces
+host=localhost
+port=3306
+database=lab_virtual_db
+user=root
+password=
