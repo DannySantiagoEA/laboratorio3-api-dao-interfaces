@@ -22,3 +22,25 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+# ==========================================
+# NetBeans & Maven
+# ==========================================
+target/
+nbproject/private/
+.vscode/
+
+# ==========================================
+# Proteus & Simuladores
+# ==========================================
+*.pdsbak
+*.workspace
+*.tmp
+*.log
+
+# ==========================================
+# Excepciones obligatorias para Entregables Lab 3
+# ==========================================
+!api-dao-lab3/dist/*.jar
+!api-dao-lab3/doc/**
+!simulacion-hardware/*.hex
