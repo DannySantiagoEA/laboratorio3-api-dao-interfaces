@@ -13,6 +13,11 @@ import co.edu.univalle.ir.entity.int_proceso;
  */
 public class PruebaProcesoDAO {
 
+        /**
+     * Constructor privado: la clase solo se usa desde su metodo main.
+     */
+    private PruebaProcesoDAO() {
+    }
     /**
      * Metodo principal de ejecucion de pruebas para int_procesoDAO.
      *

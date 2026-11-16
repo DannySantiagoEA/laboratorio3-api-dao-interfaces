@@ -1,0 +1,15 @@
+-d doc
+-sourcepath src/main/java
+-encoding UTF-8
+-docencoding UTF-8
+-charset UTF-8
+-author
+-version
+-use
+-splitIndex
+-windowtitle 'Laboratorio Virtual - API DAO'
+-doctitle 'Laboratorio Virtual - API DAO para la base de datos lab_virtual_db'
+-header '<b>Laboratorio Virtual</b><br>API DAO'
+-bottom '<font color=red><b>Universidad del Valle</b></font> <p> <b>Escuela de Ingenieria Electrica y Electronica</b> <p> Interfaces 710044M - Practica de Laboratorio No. 3'
+-group "Paquetes Principales" "co.edu.univalle.ir.conexion:co.edu.univalle.ir.dao:co.edu.univalle.ir.entity"
+-group "Paquetes Adicionales" "co.edu.univalle.ir.api.*"

@@ -85,7 +85,11 @@ public class PruebaUsuariosProcesosDAO {
                     + "VALUES (1, 1, 'Planta 8 ADC y 4 DIO', 'Hardware Lab 3', 100.0)");
         }
     }
-
+    /**
+     * Constructor privado: la clase solo se usa desde su metodo main.
+     */
+    private PruebaUsuariosProcesosDAO() {
+    }
     /**
      * Metodo principal de ejecucion de la prueba CRUD sobre
      * int_usuarios_procesos.

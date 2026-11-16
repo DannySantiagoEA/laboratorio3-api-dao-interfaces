@@ -9,10 +9,17 @@
     <version>1.0</version>
     <packaging>jar</packaging>
 
+    <name>API DAO Laboratorio Virtual</name>
+    <description>API DAO y JDBC para la base de datos lab_virtual_db - Interfaces 710044M, Universidad del Valle</description>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>22</maven.compiler.source>
         <maven.compiler.target>22</maven.compiler.target>
+        <!-- Clase que se ejecuta con "java -jar" y con Run Project (F6) -->
+        <exec.mainClass>co.edu.univalle.ir.api.dao.lab3.ApiDaoLab3</exec.mainClass>
+        <!-- Carpeta de entregables (el .gitignore ya permite subir dist/*.jar) -->
+        <dist.dir>${project.basedir}/dist</dist.dir>
     </properties>
 
     <dependencies>
@@ -23,4 +30,54 @@
             <version>8.3.0</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Tarea #24 (1): JAR de la API sin las clases de prueba -> dist/api-dao-lab3-1.0.jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.4.1</version>
+                <configuration>
+                    <outputDirectory>${dist.dir}</outputDirectory>
+                    <excludes>
+                        <exclude>**/Prueba*.class</exclude>
+                    </excludes>
+                    <archive>
+                        <manifest>
+                            <mainClass>${exec.mainClass}</mainClass>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <!-- Tarea #24 (2): JAR de la API + driver MySQL -> dist/api-dao-lab3-1.0-jar-with-dependencies.jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.7.1</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <outputDirectory>${dist.dir}</outputDirectory>
+                    <archive>
+                        <manifest>
+                            <mainClass>${exec.mainClass}</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>jar-con-driver</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
