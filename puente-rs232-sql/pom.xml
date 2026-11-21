@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>co.edu.univalle.ir</groupId>
+    <artifactId>puente-rs232-sql</artifactId>
+    <version>1.0</version>
+    <packaging>jar</packaging>
+
+    <name>Puente RS232 a SQL - Laboratorio 3 Interfaces</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>22</maven.compiler.source>
+        <maven.compiler.target>22</maven.compiler.target>
+        <exec.mainClass>co.edu.univalle.ir.puente.AppPuenteRS232</exec.mainClass>
+    </properties>
+
+    <dependencies>
+        <!-- 1. Nuestra API DAO empaquetada en JAR (Entregables 1 y 3.h) -->
+        <dependency>
+            <groupId>co.edu.univalle.ir</groupId>
+            <artifactId>api-dao-lab3</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <!-- 2. Libreria serial jSerialComm para comunicacion RS232 (Entregable 3.g) -->
+        <dependency>
+            <groupId>com.fazecast</groupId>
+            <artifactId>jSerialComm</artifactId>
+            <version>2.10.4</version>
+        </dependency>
+
+        <!-- 3. Driver MySQL JDBC requerido en tiempo de ejecucion por la API DAO -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>8.3.0</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Compilador compatible con JDK 22 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <release>22</release>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
