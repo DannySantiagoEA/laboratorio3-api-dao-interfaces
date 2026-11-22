@@ -1,14 +1,15 @@
 package co.edu.univalle.ir.entity;
 
 /**
-/**
+ * /**
  * La clase <b>int_proceso_refs</b> representa la entidad de dominio de la tabla
  * <code>int_proceso_refs</code> de la base de datos del Laboratorio Virtual.
  * <p>
  * Describe cada variable de salida (referencia) del proceso: las 4 salidas
- * digitales hacia el sistema embebido (Entregable 3.c). Los estados enviados
- * se guardan en <code>int_proceso_refs_data</code>.
+ * digitales hacia el sistema embebido (Entregable 3.c). Los estados enviados se
+ * guardan en <code>int_proceso_refs_data</code>.
  * </p>
+ *
  * @author Danny Santiago Erazo Agredo
  * @author Brayan Alexis Gomez Castano
  * @author Santiago Gutierrez Reina
@@ -57,7 +58,8 @@ public class int_proceso_refs {
      * Constructor completo con todos los campos de la tabla.
      *
      * @param id int con el identificador primario de la referencia.
-     * @param int_proceso_id int con el ID del proceso al que pertenece la referencia (FK a int_proceso).
+     * @param int_proceso_id int con el ID del proceso al que pertenece la
+     * referencia (FK a int_proceso).
      * @param nombre String con el nombre de la referencia.
      * @param descripcion String con la descripcion de la referencia.
      * @param max_2 float con el valor maximo de la referencia.
@@ -92,18 +94,22 @@ public class int_proceso_refs {
     }
 
     /**
-     * Obtiene el ID del proceso al que pertenece la referencia (FK a int_proceso).
+     * Obtiene el ID del proceso al que pertenece la referencia (FK a
+     * int_proceso).
      *
-     * @return int con el ID del proceso al que pertenece la referencia (FK a int_proceso).
+     * @return int con el ID del proceso al que pertenece la referencia (FK a
+     * int_proceso).
      */
     public int getInt_proceso_id() {
         return int_proceso_id;
     }
 
     /**
-     * Establece el ID del proceso al que pertenece la referencia (FK a int_proceso).
+     * Establece el ID del proceso al que pertenece la referencia (FK a
+     * int_proceso).
      *
-     * @param int_proceso_id int con el ID del proceso al que pertenece la referencia (FK a int_proceso).
+     * @param int_proceso_id int con el ID del proceso al que pertenece la
+     * referencia (FK a int_proceso).
      */
     public void setInt_proceso_id(int int_proceso_id) {
         this.int_proceso_id = int_proceso_id;

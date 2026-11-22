@@ -4,11 +4,12 @@ package co.edu.univalle.ir.entity;
  * La clase <b>int_usuarios</b> representa la entidad de dominio de la tabla
  * <code>int_usuarios</code> de la base de datos del Laboratorio Virtual.
  * <p>
- * Contiene los datos personales y las credenciales de acceso (email y clave)
- * de cada usuario, asi como el perfil al que pertenece en
+ * Contiene los datos personales y las credenciales de acceso (email y clave) de
+ * cada usuario, asi como el perfil al que pertenece en
  * <code>int_usuarios_tipo</code>. Es la entidad que usa la interfaz de login
  * del aplicativo (Entregable 3.a).
  * </p>
+ *
  * @author Danny Santiago Erazo Agredo
  * @author Brayan Alexis Gomez Castano
  * @author Santiago Gutierrez Reina
@@ -60,14 +61,14 @@ public class int_usuarios {
     }
 
     /**
-     * Constructor sin ID, util para insertar un nuevo usuario 
+     * Constructor sin ID, util para insertar un nuevo usuario
      *
      * @param nombres String con los nombres del usuario.
      * @param apellidos String con los apellidos del usuario.
      * @param email String con el correo electronico del usuario.
      * @param clave String con la clave de acceso (maximo 30 caracteres).
-     * @param int_usuarios_tipo_id Integer con el perfil del usuario en la
-     * tabla int_usuarios_tipo.
+     * @param int_usuarios_tipo_id Integer con el perfil del usuario en la tabla
+     * int_usuarios_tipo.
      */
     public int_usuarios(String nombres, String apellidos, String email, String clave,
             int int_usuarios_tipo_id) {
@@ -207,8 +208,8 @@ public class int_usuarios {
     }
 
     /**
-     * Retorna una representacion en cadena del usuario. La clave no se
-     * incluye para no exponerla en consola ni en registros.
+     * Retorna una representacion en cadena del usuario. La clave no se incluye
+     * para no exponerla en consola ni en registros.
      *
      * @return String con los datos principales del usuario.
      */

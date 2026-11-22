@@ -6,8 +6,8 @@ import co.edu.univalle.ir.entity.int_proceso_refs;
 import co.edu.univalle.ir.entity.int_proceso_vars;
 
 /**
- * Clase de verificacion funcional para la Tarea #17: seleccion de registros
- * en <code>int_proceso_vars</code>, <code>int_proceso_refs</code> e
+ * Clase de verificacion funcional para la Tarea #17: seleccion de registros en
+ * <code>int_proceso_vars</code>, <code>int_proceso_refs</code> e
  * <code>int_proceso_control</code> mediante {@link int_proceso_infoDAOImp}.
  * <p>
  * Requiere haber ejecutado <code>sql/datos_proceso.sql</code> (12 variables, 4

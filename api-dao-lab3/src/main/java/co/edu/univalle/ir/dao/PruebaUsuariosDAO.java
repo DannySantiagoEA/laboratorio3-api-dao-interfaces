@@ -13,6 +13,7 @@ import java.util.List;
  * <code>sql/lab_virtual_db.sql</code> (perfil ID = 1 y ID = 2). Los usuarios de
  * prueba se borran al final, asi que se puede ejecutar varias veces.
  * </p>
+ *
  * @author Danny Santiago Erazo Agredo
  * @author Brayan Alexis Gomez Castano
  * @author Santiago Gutierrez Reina
@@ -35,11 +36,12 @@ public class PruebaUsuariosDAO {
      */
     private static final int TIPO_ADMINISTRADOR = 2;
 
-        /**
+    /**
      * Constructor privado: la clase solo se usa desde su metodo main.
      */
     private PruebaUsuariosDAO() {
     }
+
     /**
      * Metodo principal de ejecucion de la prueba del DAO de usuarios.
      *

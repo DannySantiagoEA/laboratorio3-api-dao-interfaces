@@ -16,15 +16,16 @@ import java.util.List;
  * <p>
  * Estas tablas describen el hardware (variables de entrada, salidas y
  * controles) y se llenan una sola vez desde phpMyAdmin (Entregable 3.c); por
- * eso la API solo necesita leerlas. La GUI y el programa puente RS232-SQL
- * usan estos metodos para saber que ID corresponde a cada canal antes de
- * guardar datos en <code>int_proceso_vars_data</code> e
+ * eso la API solo necesita leerlas. La GUI y el programa puente RS232-SQL usan
+ * estos metodos para saber que ID corresponde a cada canal antes de guardar
+ * datos en <code>int_proceso_vars_data</code> e
  * <code>int_proceso_refs_data</code>.
  * </p>
+ *
  * @author Danny Santiago Erazo Agredo
  * @author Brayan Alexis Gomez Castano
  * @author Santiago Gutierrez Reina
-
+ *
  * @version $Revision: 1.0 $ 2026/11/16
  * @see co.edu.univalle.ir.entity.int_proceso_vars
  * @see co.edu.univalle.ir.entity.int_proceso_refs
@@ -36,8 +37,8 @@ public interface int_proceso_infoDAO {
     // int_proceso_vars (variables de entrada)
     // =========================================================================
     /**
-     * Selecciona todas las variables de entrada de un proceso, ordenadas por
-     * ID (en el laboratorio: 8 analogicas y luego 4 digitales).
+     * Selecciona todas las variables de entrada de un proceso, ordenadas por ID
+     * (en el laboratorio: 8 analogicas y luego 4 digitales).
      *
      * @param int_proceso_id Integer con el ID del proceso en int_proceso.
      * @return Lista de objetos {@link int_proceso_vars} del proceso (vacia si

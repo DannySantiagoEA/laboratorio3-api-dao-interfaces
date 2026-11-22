@@ -18,13 +18,14 @@ import java.util.List;
  * <code>int_proceso_control</code> (Tarea #17).
  * <p>
  * Las tres tablas se leen con un mismo metodo generico
- * (<code>consultar</code>); cada tabla solo aporta su
- * sentencia SQL y la forma de convertir una fila en su entidad.
+ * (<code>consultar</code>); cada tabla solo aporta su sentencia SQL y la forma
+ * de convertir una fila en su entidad.
  * </p>
+ *
  * @author Danny Santiago Erazo Agredo
  * @author Brayan Alexis Gomez Castano
  * @author Santiago Gutierrez Reina
-
+ *
  * @version $Revision: 1.0 $ 2026/11/16
  * @see co.edu.univalle.ir.dao.int_proceso_infoDAO
  */

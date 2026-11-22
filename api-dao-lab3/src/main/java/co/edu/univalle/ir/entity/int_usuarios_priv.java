@@ -5,9 +5,9 @@ package co.edu.univalle.ir.entity;
  * tabla <code>int_usuarios_priv</code> de la base de datos del Laboratorio
  * Virtual.
  * <p>
- * Guarda los privilegios de cada perfil de usuario. En la tabla cada
- * privilegio es un ENUM('0','1'); en Java se maneja como <code>boolean</code>
- * (true = '1', false = '0').
+ * Guarda los privilegios de cada perfil de usuario. En la tabla cada privilegio
+ * es un ENUM('0','1'); en Java se maneja como <code>boolean</code> (true = '1',
+ * false = '0').
  * </p>
  *
  * @author Danny Santiago Erazo Agredo

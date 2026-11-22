@@ -31,8 +31,7 @@ public interface int_usuarios_tipoDAO {
      * Selecciona un perfil de usuario por su identificador primario.
      *
      * @param id Integer con el ID del perfil.
-     * @return Objeto {@link int_usuarios_tipo} encontrado, o null si no
-     * existe.
+     * @return Objeto {@link int_usuarios_tipo} encontrado, o null si no existe.
      */
     public int_usuarios_tipo seleccionarPorId(int id);
 
@@ -40,8 +39,7 @@ public interface int_usuarios_tipoDAO {
      * Selecciona un perfil de usuario por su nombre exacto
      *
      * @param nombre String con el nombre del perfil.
-     * @return Objeto {@link int_usuarios_tipo} encontrado, o null si no
-     * existe.
+     * @return Objeto {@link int_usuarios_tipo} encontrado, o null si no existe.
      */
     public int_usuarios_tipo seleccionarPorNombre(String nombre);
 

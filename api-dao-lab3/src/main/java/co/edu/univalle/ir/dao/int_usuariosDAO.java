@@ -5,10 +5,10 @@ import java.util.List;
 
 /**
  * La interfaz <b>int_usuariosDAO</b> define el contrato de acceso a datos para
- * la gestion de registros de la tabla <code>int_usuarios</code>
- * (Requerimiento 2): insercion, edicion, borrado y seleccion filtrada por
- * diversos campos de la tabla, ademas de la validacion de credenciales que usa
- * la interfaz de login del aplicativo (Entregable 3.a).
+ * la gestion de registros de la tabla <code>int_usuarios</code> (Requerimiento
+ * 2): insercion, edicion, borrado y seleccion filtrada por diversos campos de
+ * la tabla, ademas de la validacion de credenciales que usa la interfaz de
+ * login del aplicativo (Entregable 3.a).
  *
  * @author Danny Santiago Erazo Agredo
  * @author Brayan Alexis Gomez Castano
@@ -40,8 +40,8 @@ public interface int_usuariosDAO {
      * @param apellidos String con los apellidos del usuario.
      * @param email String con el correo electronico del usuario.
      * @param clave String con la clave de acceso (maximo 30 caracteres).
-     * @param int_usuarios_tipo_id Integer con el perfil del usuario en la
-     * tabla int_usuarios_tipo.
+     * @param int_usuarios_tipo_id Integer con el perfil del usuario en la tabla
+     * int_usuarios_tipo.
      * @return int con el numero de filas insertadas.
      * @exception IllegalArgumentException Si algun dato obligatorio es
      * invalido.
@@ -103,9 +103,9 @@ public interface int_usuariosDAO {
     public int_usuarios seleccionarPorEmail(String email);
 
     /**
-     * Selecciona usuarios combinando varios filtros. Los parametros en null
-     * (o texto vacio) no se tienen en cuenta; los demas se combinan con AND.
-     * Los filtros de texto buscan coincidencias parciales.
+     * Selecciona usuarios combinando varios filtros. Los parametros en null (o
+     * texto vacio) no se tienen en cuenta; los demas se combinan con AND. Los
+     * filtros de texto buscan coincidencias parciales.
      *
      * @param id Integer con el ID exacto, o null para no filtrar.
      * @param int_usuarios_tipo_id Integer con el perfil, o null para no
@@ -121,8 +121,8 @@ public interface int_usuariosDAO {
             String nombres, String apellidos, String email);
 
     /**
-     * Valida las credenciales de un usuario para la interfaz de login
-     * La clave distingue mayusculas de minusculas.
+     * Valida las credenciales de un usuario para la interfaz de login La clave
+     * distingue mayusculas de minusculas.
      *
      * @param email String con el correo electronico del usuario.
      * @param clave String con la clave de acceso.

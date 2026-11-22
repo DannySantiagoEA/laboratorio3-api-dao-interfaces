@@ -6,8 +6,8 @@ import java.util.List;
 /**
  * La interfaz <b>int_usuarios_privDAO</b> define el contrato de acceso a datos
  * para la tabla <code>int_usuarios_priv</code>, que guarda los privilegios
- * (control, configuracion, descarga de datos, monitor y envio de datos) de
- * cada perfil de usuario (Requerimiento 2).
+ * (control, configuracion, descarga de datos, monitor y envio de datos) de cada
+ * perfil de usuario (Requerimiento 2).
  *
  * @author Danny Santiago Erazo Agredo
  * @author Brayan Alexis Gomez Castano
@@ -30,15 +30,14 @@ public interface int_usuarios_privDAO {
      * Selecciona un registro de privilegios por su identificador primario.
      *
      * @param id Integer con el ID del registro.
-     * @return Objeto {@link int_usuarios_priv} encontrado, o null si no
-     * existe.
+     * @return Objeto {@link int_usuarios_priv} encontrado, o null si no existe.
      */
     public int_usuarios_priv seleccionarPorId(int id);
 
     /**
-     * Selecciona los privilegios asignados a un perfil de usuario. Es el
-     * metodo que usa la GUI despues del login para habilitar o deshabilitar
-     * sus controles.
+     * Selecciona los privilegios asignados a un perfil de usuario. Es el metodo
+     * que usa la GUI despues del login para habilitar o deshabilitar sus
+     * controles.
      *
      * @param int_usuarios_tipo_id Integer con el ID del perfil en
      * int_usuarios_tipo.

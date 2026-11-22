@@ -9,6 +9,7 @@ package co.edu.univalle.ir.entity;
  * los que se asocian los registros de <code>int_usuarios</code> y los
  * privilegios de <code>int_usuarios_priv</code>.
  * </p>
+ *
  * @author Danny Santiago Erazo Agredo
  * @author Brayan Alexis Gomez Castano
  * @author Santiago Gutierrez Reina
@@ -38,8 +39,8 @@ public class int_usuarios_tipo {
     }
 
     /**
-     * Constructor sin ID, util para insertar un nuevo usuario 
-     * 
+     * Constructor sin ID, util para insertar un nuevo usuario
+     *
      * @param nombre String con el nombre del perfil.
      * @param descripcion String con la descripcion del perfil.
      */

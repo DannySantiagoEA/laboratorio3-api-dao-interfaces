@@ -1,12 +1,14 @@
 package co.edu.univalle.ir.entity;
 
 /**
- * La clase <b>int_proceso_control</b> representa la entidad de dominio de la tabla
- * <code>int_proceso_control</code> de la base de datos del Laboratorio Virtual.
+ * La clase <b>int_proceso_control</b> representa la entidad de dominio de la
+ * tabla <code>int_proceso_control</code> de la base de datos del Laboratorio
+ * Virtual.
  * <p>
- * Guarda la configuracion de un control del proceso con hasta cuatro
- * parametros numericos (por ejemplo, ganancias o limites de operacion).
+ * Guarda la configuracion de un control del proceso con hasta cuatro parametros
+ * numericos (por ejemplo, ganancias o limites de operacion).
  * </p>
+ *
  * @author Danny Santiago Erazo Agredo
  * @author Brayan Alexis Gomez Castano
  * @author Santiago Gutierrez Reina
@@ -65,7 +67,8 @@ public class int_proceso_control {
      * Constructor completo con todos los campos de la tabla.
      *
      * @param id int con el identificador primario del control.
-     * @param int_proceso_id int con el ID del proceso al que pertenece el control (FK a int_proceso).
+     * @param int_proceso_id int con el ID del proceso al que pertenece el
+     * control (FK a int_proceso).
      * @param nombre String con el nombre del control.
      * @param descripcion String con la descripcion del control.
      * @param parametro1 float con el parametro 1 del control.
@@ -106,16 +109,19 @@ public class int_proceso_control {
     /**
      * Obtiene el ID del proceso al que pertenece el control (FK a int_proceso).
      *
-     * @return int con el ID del proceso al que pertenece el control (FK a int_proceso).
+     * @return int con el ID del proceso al que pertenece el control (FK a
+     * int_proceso).
      */
     public int getInt_proceso_id() {
         return int_proceso_id;
     }
 
     /**
-     * Establece el ID del proceso al que pertenece el control (FK a int_proceso).
+     * Establece el ID del proceso al que pertenece el control (FK a
+     * int_proceso).
      *
-     * @param int_proceso_id int con el ID del proceso al que pertenece el control (FK a int_proceso).
+     * @param int_proceso_id int con el ID del proceso al que pertenece el
+     * control (FK a int_proceso).
      */
     public void setInt_proceso_id(int int_proceso_id) {
         this.int_proceso_id = int_proceso_id;

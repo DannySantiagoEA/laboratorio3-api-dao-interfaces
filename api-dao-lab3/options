@@ -1,15 +1,16 @@
 -d doc
 -sourcepath src/main/java
 -encoding UTF-8
--docencoding UTF-8
 -charset UTF-8
+-docencoding UTF-8
 -author
 -version
 -use
 -splitIndex
--windowtitle 'Laboratorio Virtual - API DAO'
--doctitle 'Laboratorio Virtual - API DAO para la base de datos lab_virtual_db'
--header '<b>Laboratorio Virtual</b><br>API DAO'
--bottom '<font color=red><b>Universidad del Valle</b></font> <p> <b>Escuela de Ingenieria Electrica y Electronica</b> <p> Interfaces 710044M - Practica de Laboratorio No. 3'
--group "Paquetes Principales" "co.edu.univalle.ir.conexion:co.edu.univalle.ir.dao:co.edu.univalle.ir.entity"
--group "Paquetes Adicionales" "co.edu.univalle.ir.api.*"
+-Xdoclint:none
+-windowtitle 'JAVA Virtual Lab API - DB Access'
+-doctitle 'JAVA Virtual Lab API - DB Access'
+-header '<b> JAVA Virtual Lab API </b> <p> DB Access'
+-bottom '<font color=red><b>Universidad del Valle</b></font> <p> <b>Escuela de Ingenieria Electrica y Electronica</b> <p> <a href="http://psi.univalle.edu.co">P.S.I. - Percepcion y Sistemas Inteligentes</a>'
+-group "Paquetes Principales" "java.sql.*:java.util.*:java.io.*"
+-group "Paquetes Adicionales" "co.edu.univalle.ir.*"

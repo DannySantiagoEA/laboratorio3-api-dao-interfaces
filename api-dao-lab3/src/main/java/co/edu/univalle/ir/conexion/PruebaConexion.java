@@ -86,11 +86,12 @@ public class PruebaConexion {
         ConexionDB abrir() throws Exception;
     }
 
-        /**
+    /**
      * Constructor privado: la clase solo se usa desde su metodo main.
      */
     private PruebaConexion() {
     }
+
     /**
      * Metodo principal de las pruebas de conexion.
      *

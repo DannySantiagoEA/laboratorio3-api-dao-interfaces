@@ -19,6 +19,7 @@ import java.util.List;
  * Todas las sentencias usan {@link PreparedStatement}, de modo que los valores
  * escritos por el usuario nunca se concatenan dentro del SQL.
  * </p>
+ *
  * @author Danny Santiago Erazo Agredo
  * @author Brayan Alexis Gomez Castano
  * @author Santiago Gutierrez Reina
@@ -29,8 +30,8 @@ import java.util.List;
 public class int_usuariosDAOImp implements int_usuariosDAO {
 
     /**
-     * Columnas que se leen en todas las consultas. El email es BLOB, por eso
-     * se convierte a texto con CONVERT(... USING utf8mb4).
+     * Columnas que se leen en todas las consultas. El email es BLOB, por eso se
+     * convierte a texto con CONVERT(... USING utf8mb4).
      */
     private static final String SQL_SELECT_BASE
             = "SELECT id, int_usuarios_tipo_id, nombres, apellidos, "
@@ -57,8 +58,8 @@ public class int_usuariosDAOImp implements int_usuariosDAO {
             = SQL_SELECT_BASE + " WHERE CONVERT(email USING utf8mb4) = ?";
 
     /**
-     * Sentencia SQL del login. BINARY hace que la clave distinga mayusculas
-     * de minusculas.
+     * Sentencia SQL del login. BINARY hace que la clave distinga mayusculas de
+     * minusculas.
      */
     private static final String SQL_LOGIN
             = SQL_SELECT_BASE + " WHERE CONVERT(email USING utf8mb4) = ? AND BINARY clave = ?";
@@ -414,8 +415,8 @@ public class int_usuariosDAOImp implements int_usuariosDAO {
      * @param nombres String con los nombres.
      * @param apellidos String con los apellidos.
      * @param clave String con la clave.
-     * @exception IllegalArgumentException Si algun campo obligatorio esta
-     * vacio o la clave es demasiado larga.
+     * @exception IllegalArgumentException Si algun campo obligatorio esta vacio
+     * o la clave es demasiado larga.
      */
     private static void validarDatos(String nombres, String apellidos, String clave) {
         if (estaVacio(nombres)) {

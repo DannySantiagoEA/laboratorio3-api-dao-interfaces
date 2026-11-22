@@ -4,10 +4,11 @@ package co.edu.univalle.ir.entity;
  * La clase <b>int_proceso_vars</b> representa la entidad de dominio de la tabla
  * <code>int_proceso_vars</code> de la base de datos del Laboratorio Virtual.
  * <p>
- * Describe cada variable de entrada del proceso: las 8 entradas analogicas
- * y las 4 entradas digitales que envia el sistema embebido (Entregable 3.c).
- * Sus valores medidos se guardan en <code>int_proceso_vars_data</code>.
+ * Describe cada variable de entrada del proceso: las 8 entradas analogicas y
+ * las 4 entradas digitales que envia el sistema embebido (Entregable 3.c). Sus
+ * valores medidos se guardan en <code>int_proceso_vars_data</code>.
  * </p>
+ *
  * @author Danny Santiago Erazo Agredo
  * @author Brayan Alexis Gomez Castano
  * @author Santiago Gutierrez Reina
@@ -56,7 +57,8 @@ public class int_proceso_vars {
      * Constructor completo con todos los campos de la tabla.
      *
      * @param id int con el identificador primario de la variable.
-     * @param int_proceso_id int con el ID del proceso al que pertenece la variable (FK a int_proceso).
+     * @param int_proceso_id int con el ID del proceso al que pertenece la
+     * variable (FK a int_proceso).
      * @param nombre String con el nombre de la variable.
      * @param descripcion String con la descripcion de la variable.
      * @param max_2 float con el valor maximo de la variable.
@@ -91,18 +93,22 @@ public class int_proceso_vars {
     }
 
     /**
-     * Obtiene el ID del proceso al que pertenece la variable (FK a int_proceso).
+     * Obtiene el ID del proceso al que pertenece la variable (FK a
+     * int_proceso).
      *
-     * @return int con el ID del proceso al que pertenece la variable (FK a int_proceso).
+     * @return int con el ID del proceso al que pertenece la variable (FK a
+     * int_proceso).
      */
     public int getInt_proceso_id() {
         return int_proceso_id;
     }
 
     /**
-     * Establece el ID del proceso al que pertenece la variable (FK a int_proceso).
+     * Establece el ID del proceso al que pertenece la variable (FK a
+     * int_proceso).
      *
-     * @param int_proceso_id int con el ID del proceso al que pertenece la variable (FK a int_proceso).
+     * @param int_proceso_id int con el ID del proceso al que pertenece la
+     * variable (FK a int_proceso).
      */
     public void setInt_proceso_id(int int_proceso_id) {
         this.int_proceso_id = int_proceso_id;

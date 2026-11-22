@@ -1,0 +1,6 @@
+# Archivo de configuracion de conexion JDBC para el Puente RS232-SQL (Lab 3)
+host=localhost
+port=3306
+database=lab_virtual_db
+user=root
+password=
