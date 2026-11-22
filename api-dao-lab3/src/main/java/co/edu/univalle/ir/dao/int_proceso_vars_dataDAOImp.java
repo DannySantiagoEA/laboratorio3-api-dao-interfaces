@@ -173,7 +173,7 @@ public class int_proceso_vars_dataDAOImp implements int_proceso_vars_dataDAO {
                 }
                 dato.setFecha(fechaRegistro);
                 dato.setHora(horaRegistro);
-                this.datosVariables.add(dato);
+                
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -225,7 +225,7 @@ public class int_proceso_vars_dataDAOImp implements int_proceso_vars_dataDAO {
                     totalInsertados++;
                 }
             }
-            this.datosVariables.addAll(muestras);
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -339,6 +339,47 @@ public class int_proceso_vars_dataDAOImp implements int_proceso_vars_dataDAO {
             e.printStackTrace();
         }
         return listaRecientes;
+    }
+    
+        /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<int_proceso_vars_data> seleccionarPosterioresA(int[] idsVariables, int ultimoIdLeido, int limite) {
+        List<int_proceso_vars_data> nuevas = new ArrayList<>();
+        if (idsVariables == null || idsVariables.length == 0) {
+            return nuevas;
+        }
+        int maxRegistros = (limite > 0) ? limite : 500;
+
+        // Un marcador ? por cada variable: IN (?, ?, ...)
+        StringBuilder marcadores = new StringBuilder();
+        for (int i = 0; i < idsVariables.length; i++) {
+            marcadores.append(i == 0 ? "?" : ", ?");
+        }
+        String sql = "SELECT id, int_proceso_vars_id, valor, tiempo, fecha, hora "
+                + "FROM int_proceso_vars_data "
+                + "WHERE id > ? AND int_proceso_vars_id IN (" + marcadores + ") "
+                + "ORDER BY id ASC LIMIT ?";
+
+        try (PreparedStatement pstmt = this.dbConn.prepareStatement(sql)) {
+            int indice = 1;
+            pstmt.setInt(indice++, ultimoIdLeido);
+            for (int idVariable : idsVariables) {
+                pstmt.setInt(indice++, idVariable);
+            }
+            pstmt.setInt(indice, maxRegistros);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    nuevas.add(mapearDatoVariable(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        // No se guarda en datosVariables: esta consulta se repite cada pocos
+        // milisegundos y acumular sus filas haria crecer la memoria sin limite.
+        return nuevas;
     }
 
     /**

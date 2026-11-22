@@ -170,4 +170,20 @@ public interface int_proceso_vars_dataDAO {
      * @return int con el total de filas eliminadas.
      */
     public int borrarTodos();
+    
+        /**
+     * Selecciona, en orden cronologico, las muestras de varias variables cuyo
+     * ID es mayor que el ultimo ID ya leido. Es la consulta incremental de
+     * ventana deslizante de la GUI (Tarea #39): en cada ciclo trae solo las
+     * filas nuevas en lugar de volver a leer el historial.
+     *
+     * @param idsVariables Arreglo con los ID de int_proceso_vars a consultar
+     * (ej. {1, 9} para Analogica 1 y Digital 1).
+     * @param ultimoIdLeido Integer con el ID de la ultima muestra ya recibida
+     * (0 si aun no se ha leido ninguna).
+     * @param limite Integer con el maximo de filas por consulta.
+     * @return Lista de objetos {@link int_proceso_vars_data} ordenada por ID
+     * ascendente (vacia si no hay datos nuevos).
+     */
+    public List<int_proceso_vars_data> seleccionarPosterioresA(int[] idsVariables, int ultimoIdLeido, int limite);
 }
