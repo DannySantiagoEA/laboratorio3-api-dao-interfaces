@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>co.edu.univalle.ir</groupId>
+    <artifactId>gui-lab3</artifactId>
+    <version>1.0</version>
+    <packaging>jar</packaging>
+
+    <name>GUI Laboratorio Virtual - Laboratorio 3 Interfaces</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>22</maven.compiler.source>
+        <maven.compiler.target>22</maven.compiler.target>
+        <exec.mainClass>co.edu.univalle.ir.gui.AppGuiLabVirtual</exec.mainClass>
+    </properties>
+
+    <dependencies>
+        <!-- 1. API DAO del Sprint 1 empaquetada en JAR (Entregables 1 y 3.h) -->
+        <dependency>
+            <groupId>co.edu.univalle.ir</groupId>
+            <artifactId>api-dao-lab3</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <!-- 2. Driver MySQL JDBC requerido en ejecucion por la API DAO -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>8.3.0</version>
+        </dependency>
+
+        <!-- 3. JFreeChart preparado para las graficas de HU-08 -->
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.5.4</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <release>22</release>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
