@@ -26,7 +26,8 @@ import java.util.ArrayList;
 public class PruebaProcesoFuncionalDAO {
 
     /**
-     * Tolerancia al comparar floats leidos de MySQL (la columna es FLOAT(10,2)).
+     * Tolerancia al comparar floats leidos de MySQL (la columna es
+     * FLOAT(10,2)).
      */
     private static final float TOL = 0.01f;
 

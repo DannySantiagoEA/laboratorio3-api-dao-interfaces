@@ -1,0 +1,6 @@
+# Configuracion JDBC para la GUI del Laboratorio Virtual (HU-07 / Lab 3)
+host=localhost
+port=3306
+database=lab_virtual_db
+user=root
+password=
