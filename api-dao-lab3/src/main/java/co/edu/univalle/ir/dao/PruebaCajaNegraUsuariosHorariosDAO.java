@@ -169,14 +169,13 @@ public class PruebaCajaNegraUsuariosHorariosDAO {
     /**
      * Ejecuta las pruebas de alta, consultas filtradas, login, entradas
      * invalidas, edicion y borrado de int_usuariosDAO. Deja en la base a los
-     * usuarios A, B y C para que los use la prueba de horarios; el usuario D
-     * lo crea y lo borra ella misma.
+     * usuarios A, B y C para que los use la prueba de horarios; el usuario D lo
+     * crea y lo borra ella misma.
      *
      * @param dao DAO de la tabla int_usuarios.
      * @param tipoA Id de un perfil (int_usuarios_tipo) que existe.
      * @param tipoB Id de otro perfil que existe.
-     * @return Los ids de los usuarios A, B y C, o null si no se pudieron
-     * crear.
+     * @return Los ids de los usuarios A, B y C, o null si no se pudieron crear.
      */
     static int[] probarUsuarios(int_usuariosDAO dao, int tipoA, int tipoB) {
         System.out.println("\n[1] ALTA de usuarios (insertarUsuario)");
@@ -310,7 +309,7 @@ public class PruebaCajaNegraUsuariosHorariosDAO {
         int filasDuplicado = dao.insertarUsuario("Duplicado", "Email Repetido", EMAIL_A, "claveX9", tipoA);
         observar("dos usuarios con el mismo email",
                 filasDuplicado == 1 ? "el DAO los ACEPTA (la tabla no tiene UNIQUE en email)"
-                : "el DAO lo rechaza");
+                        : "el DAO lo rechaza");
         // Se recorre una COPIA: el DAO guarda en memoria la misma lista que devuelve
         // y borrarUsuario la modifica, asi que borrar mientras se recorre la
         // original lanza ConcurrentModificationException.
