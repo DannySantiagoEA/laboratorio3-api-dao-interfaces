@@ -74,6 +74,7 @@ public class App {
             vista.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
+                    controlador.cerrarRecursosDB();
                     controlador.detenerAdquisicion();
                     if (gestor.isConectado()) {
                         gestor.desconectar();
