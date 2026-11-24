@@ -19,15 +19,15 @@ import javax.swing.SwingWorker;
 import javax.swing.Timer;
 
 /**
- * Controlador de la Tarea #33 (HU-07 - Entregables 3.a y 3.h): Enlaza el boton
- * de ingreso de {@link VentanaLogin} con las consultas filtradas de
- * {@link int_usuariosDAO} y gestiona el control de acceso hacia
- * {@link VentanaPrincipal}.
+ * Controlador de la Tarea #33 (HU-07) integrado con la Tarea #37 (HU-08):
+ * Enlaza el boton de ingreso de {@link VentanaLogin} con las consultas
+ * filtradas de {@link int_usuariosDAO}, gestiona el control de acceso hacia
+ * {@link VentanaPrincipal} y arranca {@link ControladorGraficacionDAO}.
  *
  * @author Danny Santiago Erazo Agredo
  * @author Brayan Alexis Gomez Castano
  * @author Santiago Gutierrez Reina
- * @version $Revision: 1.0 $ 2026/11/22
+ * @version $Revision: 1.1 $ 2026/11/23
  */
 public class ControladorLogin {
 
@@ -59,22 +59,10 @@ public class ControladorLogin {
     private final String rutaConfigDb;
     private int intentosFallidos = 0;
 
-    /**
-     * Crea el controlador enlazado a la vista de login usando db_config.txt.
-     *
-     * @param vistaLogin Instancia de {@link VentanaLogin}.
-     */
     public ControladorLogin(VentanaLogin vistaLogin) {
         this(vistaLogin, RUTA_CONFIG_DB);
     }
 
-    /**
-     * Constructor sobrecargado que permite indicar otra ruta de archivo de
-     * configuracion.
-     *
-     * @param vistaLogin Instancia de {@link VentanaLogin}.
-     * @param rutaConfigDb Ruta al archivo de credenciales JDBC.
-     */
     public ControladorLogin(VentanaLogin vistaLogin, String rutaConfigDb) {
         this.vistaLogin = vistaLogin;
         this.rutaConfigDb = rutaConfigDb;
@@ -85,15 +73,10 @@ public class ControladorLogin {
         this.vistaLogin.addIngresoListener(e -> procesarIngreso());
     }
 
-    /**
-     * Valida campos y dispara la autenticacion contra int_usuariosDAO en un
-     * hilo secundario (SwingWorker) para no congelar la interfaz Swing.
-     */
     private void procesarIngreso() {
         String email = vistaLogin.getEmail();
         String clave = vistaLogin.getClave();
 
-        // 1. Validacion defensiva en el EDT
         if (email.isEmpty() || clave.isEmpty()) {
             vistaLogin.mostrarEstado("Complete correo electronico y contrasena.", COLOR_ERROR);
             JOptionPane.showMessageDialog(
@@ -110,11 +93,9 @@ public class ControladorLogin {
             return;
         }
 
-        // 2. Deshabilitar controles mientras consulta a MySQL via API DAO
         vistaLogin.setControlesHabilitados(false);
         vistaLogin.mostrarEstado("Consultando credenciales en int_usuarios (MySQL)...", COLOR_INFO);
 
-        // 3. Consulta filtrada y control de acceso fuera del EDT
         SwingWorker<ResultadoAcceso, Void> worker = new SwingWorker<>() {
             @Override
             protected ResultadoAcceso doInBackground() throws Exception {
@@ -123,24 +104,20 @@ public class ControladorLogin {
                     throw new SQLException("ConexionDB no logro abrir una sesion activa con MySQL.");
                 }
 
-                // Nota: si en su version de api-dao-lab3 el constructor recibe Connection, use conexionDB.getConnection()
                 int_usuariosDAO usuarioDAO = new int_usuariosDAOImp(conexionDB);
 
-                // Paso A: Consulta filtrada por email en int_usuarios
                 int_usuarios usuarioPorEmail = usuarioDAO.seleccionarPorEmail(email);
                 if (usuarioPorEmail == null) {
                     conexionDB.cerrarConexion();
                     return ResultadoAcceso.usuarioNoEncontrado();
                 }
 
-                // Paso B: Validacion estricta de credenciales (clave sensible a mayusculas)
                 int_usuarios usuarioAutenticado = usuarioDAO.validarCredenciales(email, clave);
                 if (usuarioAutenticado == null) {
                     conexionDB.cerrarConexion();
                     return ResultadoAcceso.claveIncorrecta();
                 }
 
-                // Paso C: Consultar horario asignado en int_usuarios_procesos (control de acceso al proceso)
                 int_usuarios_procesos horario = null;
                 try {
                     int_usuarios_procesosDAO horariosDAO = new int_usuarios_procesosDAOImp(conexionDB);
@@ -149,7 +126,6 @@ public class ControladorLogin {
                             ID_PROCESO_DEFECTO
                     );
                 } catch (Exception ignored) {
-                    // Si no hay horario cargado, se continua con los privilegios del perfil del usuario
                 }
 
                 SesionUsuario sesion = new SesionUsuario(
@@ -208,10 +184,6 @@ public class ControladorLogin {
         worker.execute();
     }
 
-    /**
-     * Aplica el control de intentos fallidos y bloquea temporalmente el acceso
-     * tras alcanzar MAX_INTENTOS_FALLIDOS.
-     */
     private void gestionarIntentoFallido(String motivo) {
         intentosFallidos++;
         int restantes = MAX_INTENTOS_FALLIDOS - intentosFallidos;
@@ -237,10 +209,6 @@ public class ControladorLogin {
         }
     }
 
-    /**
-     * Bloquea los controles de inicio de sesion durante SEGUNDOS_BLOQUEO usando
-     * un javax.swing.Timer para no bloquear el EDT.
-     */
     private void iniciarBloqueoTemporal() {
         vistaLogin.setControlesHabilitados(false);
         final int[] segundosRestantes = {SEGUNDOS_BLOQUEO};
@@ -277,14 +245,23 @@ public class ControladorLogin {
     }
 
     /**
-     * Cierra el formulario de login, despliega VentanaPrincipal y enlaza el
-     * boton Cerrar Sesion para retornar al control de acceso de forma segura.
+     * Despliega VentanaPrincipal, arranca ControladorGraficacionDAO (Tarea #37)
+     * y asegura la detencion ordenada de timers y conexiones al cerrar sesion o
+     * salir.
      */
     private void abrirVentanaPrincipal(SesionUsuario sesion) {
         vistaLogin.dispose();
 
         VentanaPrincipal ventanaPrincipal = new VentanaPrincipal(sesion);
+        ControladorGraficacionDAO controladorGraficas = new ControladorGraficacionDAO(
+                ventanaPrincipal.getPanelMonitoreoEntradas(),
+                sesion,
+                rutaConfigDb
+        );
+
+        ventanaPrincipal.setOnCerrarVentana(controladorGraficas::detener);
         ventanaPrincipal.addCerrarSesionListener(e -> {
+            controladorGraficas.detener();
             sesion.cerrarConexionSegura();
             ventanaPrincipal.dispose();
 
@@ -292,13 +269,11 @@ public class ControladorLogin {
             new ControladorLogin(nuevoLogin, rutaConfigDb);
             nuevoLogin.setVisible(true);
         });
+
         ventanaPrincipal.setVisible(true);
+        controladorGraficas.iniciar();
     }
 
-    /**
-     * Estructura interna inmutable para transportar el resultado del
-     * SwingWorker al EDT.
-     */
     private static final class ResultadoAcceso {
 
         final boolean accesoConcedido;
