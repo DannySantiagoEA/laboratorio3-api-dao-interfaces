@@ -16,27 +16,27 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 
 /**
  * Ventana principal protegida de la GUI del Laboratorio Virtual (HU-07 y
  * HU-08).
  * <p>
- * Solo es instanciada por
- * {@link co.edu.univalle.ir.gui.controller.ControladorLogin} tras validar las
- * credenciales contra <code>int_usuarios</code>.
+ * Aloja el {@link PanelMonitoreoEntradas} (Tarea #37) para la graficacion en
+ * tiempo real de las 8 entradas analogicas y 4 digitales desde MySQL via DAO.
  * </p>
  *
  * @author Danny Santiago Erazo Agredo
  * @author Brayan Alexis Gomez Castano
  * @author Santiago Gutierrez Reina
- * @version $Revision: 1.0 $ 2026/11/22
+ * @version $Revision: 1.1 $ 2026/11/23
  */
 public class VentanaPrincipal extends JFrame {
 
     private final SesionUsuario sesion;
     private JButton btnCerrarSesion;
     private JPanel panelContenidoCentral;
+    private PanelMonitoreoEntradas panelMonitoreoEntradas;
+    private Runnable onCerrarVentana;
 
     public VentanaPrincipal(SesionUsuario sesion) {
         if (sesion == null || sesion.getUsuario() == null) {
@@ -48,9 +48,9 @@ public class VentanaPrincipal extends JFrame {
     }
 
     private void inicializarComponentes() {
-        setTitle("Laboratorio Virtual Univalle - Panel de Supervision y Control (DAO)");
+        setTitle("Laboratorio Virtual Univalle - Monitor DAO en Tiempo Real (HU-07 / HU-08)");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setMinimumSize(new Dimension(980, 620));
+        setMinimumSize(new Dimension(1120, 680));
         getContentPane().setLayout(new BorderLayout());
 
         // 1. Barra superior con datos del usuario autenticado y boton Cerrar Sesion
@@ -58,7 +58,7 @@ public class VentanaPrincipal extends JFrame {
         barraSuperior.setBackground(new Color(24, 43, 73));
         barraSuperior.setBorder(BorderFactory.createEmptyBorder(10, 18, 10, 18));
 
-        JLabel lblSistema = new JLabel("LABORATORIO VIRTUAL | Procesos en Tiempo Real via API DAO");
+        JLabel lblSistema = new JLabel("LABORATORIO VIRTUAL | Supervision 8 ADC + 4 DIG via API DAO");
         lblSistema.setFont(new Font("Segoe UI", Font.BOLD, 15));
         lblSistema.setForeground(Color.WHITE);
 
@@ -88,36 +88,44 @@ public class VentanaPrincipal extends JFrame {
         barraSuperior.add(lblSistema, BorderLayout.WEST);
         barraSuperior.add(panelUsuario, BorderLayout.EAST);
 
-        // 2. Panel central (alojara el control de tiempo de muestreo HU-07 y graficas/salidas HU-08)
+        // 2. Panel central con el monitor de las 8 entradas analogicas y 4 digitales (Tarea #37)
         panelContenidoCentral = new JPanel(new BorderLayout());
-        panelContenidoCentral.setBackground(new Color(245, 247, 250));
-        panelContenidoCentral.setBorder(BorderFactory.createEmptyBorder(24, 24, 24, 24));
+        panelContenidoCentral.setBackground(new Color(243, 246, 250));
+
+        panelMonitoreoEntradas = new PanelMonitoreoEntradas();
+        panelContenidoCentral.add(panelMonitoreoEntradas, BorderLayout.CENTER);
+
+        // 3. Barra inferior de sesion y proceso activo
+        JPanel barraInferior = new JPanel(new BorderLayout());
+        barraInferior.setBackground(new Color(235, 240, 246));
+        barraInferior.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(205, 214, 224)),
+                BorderFactory.createEmptyBorder(6, 16, 6, 16)
+        ));
 
         int_usuarios_procesos horario = sesion.getHorarioAsignado();
         String textoHorario = (horario != null)
-                ? String.format("Horario asignado al Proceso #%d: %s a %s (%s - %s)",
+                ? String.format("Proceso #%d | Horario: %s a %s (%s - %s)",
                         sesion.getIdProcesoActivo(),
                         horario.getFecha_inicio(), horario.getFecha_fin(),
                         horario.getHora_inicio(), horario.getHora_fin())
-                : "Acceso habilitado para el Proceso #" + sesion.getIdProcesoActivo()
-                + (sesion.isAdministrador() ? " (Privilegio Administrador)" : " (Sin restriccion horaria registrada)");
+                : "Proceso #" + sesion.getIdProcesoActivo()
+                + " | Base de datos: " + sesion.getConexionDB().getBaseDatos();
 
-        JLabel lblResumen = new JLabel(
-                "<html><div style='text-align:center;'>"
-                + "<h2>Acceso concedido correctamente (Tarea #33 - HU-07)</h2>"
-                + "<p>Operador autenticado: <b>" + sesion.getNombreCompleto() + "</b> (" + sesion.getUsuario().getEmail() + ")</p>"
-                + "<p>Perfil: <b>" + sesion.getDescripcionPerfil() + "</b> | Base de datos: <code>"
-                + sesion.getConexionDB().getBaseDatos() + "</code></p>"
-                + "<p style='color:#2d3436; margin-top:8px;'>" + textoHorario + "</p>"
-                + "<p style='color:#636e72; margin-top:16px;'>Contenedor listo para integrar el control de <code>tiempo_muestreo</code> (HU-07) y paneles de graficacion/salidas (HU-08).</p>"
-                + "</div></html>",
-                SwingConstants.CENTER
-        );
-        lblResumen.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        panelContenidoCentral.add(lblResumen, BorderLayout.CENTER);
+        JLabel lblPieIzq = new JLabel(textoHorario);
+        lblPieIzq.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        lblPieIzq.setForeground(new Color(60, 72, 88));
+
+        JLabel lblPieDer = new JLabel("Universidad del Valle - EIEE | Interfaces 710044M");
+        lblPieDer.setFont(new Font("Segoe UI", Font.ITALIC, 12));
+        lblPieDer.setForeground(new Color(100, 112, 128));
+
+        barraInferior.add(lblPieIzq, BorderLayout.WEST);
+        barraInferior.add(lblPieDer, BorderLayout.EAST);
 
         getContentPane().add(barraSuperior, BorderLayout.NORTH);
         getContentPane().add(panelContenidoCentral, BorderLayout.CENTER);
+        getContentPane().add(barraInferior, BorderLayout.SOUTH);
 
         pack();
         setLocationRelativeTo(null);
@@ -127,6 +135,9 @@ public class VentanaPrincipal extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
+                if (onCerrarVentana != null) {
+                    onCerrarVentana.run();
+                }
                 sesion.cerrarConexionSegura();
             }
         });
@@ -138,6 +149,14 @@ public class VentanaPrincipal extends JFrame {
 
     public JPanel getPanelContenidoCentral() {
         return panelContenidoCentral;
+    }
+
+    public PanelMonitoreoEntradas getPanelMonitoreoEntradas() {
+        return panelMonitoreoEntradas;
+    }
+
+    public void setOnCerrarVentana(Runnable onCerrarVentana) {
+        this.onCerrarVentana = onCerrarVentana;
     }
 
     public void addCerrarSesionListener(ActionListener listener) {
