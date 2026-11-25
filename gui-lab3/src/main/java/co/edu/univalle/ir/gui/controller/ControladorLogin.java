@@ -8,26 +8,36 @@ import co.edu.univalle.ir.dao.int_usuarios_procesosDAOImp;
 import co.edu.univalle.ir.entity.int_usuarios;
 import co.edu.univalle.ir.entity.int_usuarios_procesos;
 import co.edu.univalle.ir.gui.model.SesionUsuario;
+import co.edu.univalle.ir.gui.view.PanelSalidasDigitales;
 import co.edu.univalle.ir.gui.view.VentanaLogin;
 import co.edu.univalle.ir.gui.view.VentanaPrincipal;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.concurrent.ExecutionException;
+import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 import javax.swing.Timer;
 
 /**
- * Controlador de la Tarea #33 (HU-07) integrado con la Tarea #37 (HU-08):
- * Enlaza el boton de ingreso de {@link VentanaLogin} con las consultas
- * filtradas de {@link int_usuariosDAO}, gestiona el control de acceso hacia
- * {@link VentanaPrincipal} y arranca {@link ControladorGraficacionDAO}.
+ * Controlador unificado del Sprint 2 (HU-07 y HU-08):
+ * <ul>
+ * <li>Tarea #33: autentica al usuario mediante {@link int_usuariosDAO} y
+ * gestiona el control de acceso.</li>
+ * <li>Tareas #34, #37 y #39: arranca {@link ControladorGraficacionDAO} (ventana
+ * deslizante incremental y cambio de Ts).</li>
+ * <li>Tarea #38: monta {@link PanelSalidasDigitales} y arranca
+ * {@link ControladorSalidasDigitales} (4 salidas D1..D4 hacia
+ * int_proceso_refs_data).</li>
+ * </ul>
  *
  * @author Danny Santiago Erazo Agredo
  * @author Brayan Alexis Gomez Castano
  * @author Santiago Gutierrez Reina
- * @version $Revision: 1.1 $ 2026/11/23
+ * @version $Revision: 1.2 $ 2026/11/24
  */
 public class ControladorLogin {
 
@@ -245,23 +255,39 @@ public class ControladorLogin {
     }
 
     /**
-     * Despliega VentanaPrincipal, arranca ControladorGraficacionDAO (Tarea #37)
-     * y asegura la detencion ordenada de timers y conexiones al cerrar sesion o
-     * salir.
+     * Despliega VentanaPrincipal integrando graficacion DAO (#34, #37, #39) y
+     * salidas digitales D1..D4 (#38), asegurando cierre ordenado al salir o
+     * cerrar sesion.
      */
     private void abrirVentanaPrincipal(SesionUsuario sesion) {
         vistaLogin.dispose();
 
         VentanaPrincipal ventanaPrincipal = new VentanaPrincipal(sesion);
-        ControladorGraficacionDAO controladorGraficas = new ControladorGraficacionDAO(
+
+        // 1. Controlador de graficacion incremental y tiempo de muestreo (#34, #37, #39)
+        final ControladorGraficacionDAO controladorGraficas = new ControladorGraficacionDAO(
                 ventanaPrincipal.getPanelMonitoreoEntradas(),
                 sesion,
                 rutaConfigDb
         );
 
-        ventanaPrincipal.setOnCerrarVentana(controladorGraficas::detener);
+        // 2. Panel y controlador de las 4 salidas digitales D1..D4 (#38)
+        final ControladorSalidasDigitales controladorSalidas = enlazarSalidasDigitales(ventanaPrincipal, sesion);
+
+        // Cierre seguro al pulsar la X de la ventana (antes de cerrar sesion.getConexionDB())
+        ventanaPrincipal.setOnCerrarVentana(() -> {
+            controladorGraficas.detener();
+            if (controladorSalidas != null) {
+                controladorSalidas.detener();
+            }
+        });
+
+        // Cierre seguro al pulsar el boton "Cerrar Sesion"
         ventanaPrincipal.addCerrarSesionListener(e -> {
             controladorGraficas.detener();
+            if (controladorSalidas != null) {
+                controladorSalidas.detener();
+            }
             sesion.cerrarConexionSegura();
             ventanaPrincipal.dispose();
 
@@ -272,6 +298,39 @@ public class ControladorLogin {
 
         ventanaPrincipal.setVisible(true);
         controladorGraficas.iniciar();
+    }
+
+    /**
+     * Tarea #38 (HU-08): monta PanelSalidasDigitales en la zona inferior del
+     * panel central con margenes alineados al monitor de entradas y lo enlaza
+     * con ControladorSalidasDigitales hacia int_proceso_refs_data.
+     */
+    private ControladorSalidasDigitales enlazarSalidasDigitales(VentanaPrincipal ventanaPrincipal,
+            SesionUsuario sesion) {
+        PanelSalidasDigitales panelSalidas = new PanelSalidasDigitales();
+
+        JPanel contenedorSalidas = new JPanel(new BorderLayout());
+        contenedorSalidas.setBackground(new Color(243, 246, 250));
+        contenedorSalidas.setBorder(BorderFactory.createEmptyBorder(0, 14, 12, 14));
+        contenedorSalidas.add(panelSalidas, BorderLayout.CENTER);
+
+        ventanaPrincipal.getPanelContenidoCentral().add(contenedorSalidas, BorderLayout.SOUTH);
+
+        ControladorSalidasDigitales controlador = null;
+        try {
+            controlador = new ControladorSalidasDigitales(panelSalidas, sesion.getConexionDB());
+            controlador.sincronizarDesdeBaseDeDatos();
+            System.out.println("[OK #38] ControladorSalidasDigitales iniciado (D1..D4 -> int_proceso_refs_data).");
+        } catch (SQLException ex) {
+            panelSalidas.setBotonesHabilitados(false);
+            panelSalidas.mostrarEstado("No se pudo crear el DAO de las salidas digitales: "
+                    + ex.getMessage(), COLOR_ERROR);
+            System.err.println("[ERROR BD #38] " + ex.getMessage());
+        }
+
+        ventanaPrincipal.pack();
+        ventanaPrincipal.setLocationRelativeTo(null);
+        return controlador;
     }
 
     private static final class ResultadoAcceso {
