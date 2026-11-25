@@ -1,6 +1,5 @@
 package co.edu.univalle.ir.gui.view;
 
-import co.edu.univalle.ir.entity.int_proceso_vars_data;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -18,44 +17,35 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.renderer.xy.XYStepRenderer;
+import org.jfree.data.Range;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 /**
- * Componente Swing basado en JFreeChart para graficar series temporales (Valor
- * vs. Tiempo) leidas desde la tabla <code>int_proceso_vars_data</code> (HU-08 -
- * Tarea #37).
+ * Componente Swing basado en JFreeChart con ventana deslizante optimizada
+ * (Tareas #37 y #39 - Entregable 3.d).
  *
  * @author Danny Santiago Erazo Agredo
  * @author Brayan Alexis Gomez Castano
  * @author Santiago Gutierrez Reina
- * @version $Revision: 1.0 $ 2026/11/23
+ * @version $Revision: 1.1 $ 2026/11/24
  */
 public class GraficaTiempo extends JPanel {
+
+    public static final double VENTANA_SEGUNDOS = 10.0;
+    public static final int MAX_PUNTOS = 1000;
 
     private final XYSeries serie;
     private final JFreeChart grafica;
     private final boolean esDigital;
     private String tituloVisible;
 
-    /**
-     * Crea un lienzo de graficacion JFreeChart configurado para senal analogica
-     * o digital.
-     *
-     * @param etiquetaEjeY Etiqueta del eje vertical (ej. "Voltaje (V)" o "Nivel
-     * Logico (0/1)").
-     * @param minY Limite inferior fijo del eje Y.
-     * @param maxY Limite superior fijo del eje Y.
-     * @param esDigital true para renderizado escalonado discreto (0/1), false
-     * para linea continua.
-     * @param colorTrazo Color principal de la curva.
-     */
     public GraficaTiempo(String etiquetaEjeY, double minY, double maxY, boolean esDigital, Color colorTrazo) {
         this.esDigital = esDigital;
         this.tituloVisible = etiquetaEjeY;
 
-        // autoSort=false y allowDuplicateXValues=true evitan excepciones si dos muestras comparten tiempo
         this.serie = new XYSeries("Muestras DAO", false, true);
+        this.serie.setMaximumItemCount(MAX_PUNTOS);
         XYSeriesCollection dataset = new XYSeriesCollection(serie);
 
         this.grafica = ChartFactory.createXYLineChart(
@@ -90,9 +80,10 @@ public class GraficaTiempo extends JPanel {
         plot.setRangeGridlinePaint(new Color(215, 222, 232));
         plot.setOutlinePaint(new Color(180, 190, 204));
 
+        // Eje X en modo osciloscopio: ventana deslizante fija de los ultimos 10 s (Tarea #39)
         NumberAxis ejeX = (NumberAxis) plot.getDomainAxis();
         ejeX.setAutoRange(true);
-        ejeX.setAutoRangeIncludesZero(false);
+        ejeX.setFixedAutoRange(VENTANA_SEGUNDOS);
         ejeX.setLabelFont(new Font("Segoe UI", Font.BOLD, 12));
         ejeX.setTickLabelFont(new Font("Segoe UI", Font.PLAIN, 11));
 
@@ -117,62 +108,49 @@ public class GraficaTiempo extends JPanel {
     }
 
     /**
-     * Reemplaza limpiamente los puntos visibles con las muestras recuperadas
-     * desde MySQL (int_proceso_vars_data), evitando parpadeos visuales.
+     * Tarea #39: agrega un lote de puntos {tiempo, valor} y ejecuta un solo
+     * redibujo al final del lote para mantener fluido el EDT de Swing.
      *
-     * @param muestras Lista ordenada cronologicamente devuelta por
-     * seleccionarUltimosPorVariable().
+     * @param puntos Lista de pares {tiempo (s), valor}.
      */
-    public void actualizarDesdeMuestras(List<int_proceso_vars_data> muestras) {
-        serie.setNotify(false);
-        try {
-            serie.clear();
-            if (muestras != null && !muestras.isEmpty()) {
-                // Si hubo un reinicio del puente RS232 (t vuelve a 0), mostrar solo la corrida mas reciente
-                int indiceInicio = 0;
-                for (int i = muestras.size() - 1; i > 0; i--) {
-                    if (muestras.get(i).getTiempo() < muestras.get(i - 1).getTiempo()) {
-                        indiceInicio = i;
-                        break;
-                    }
-                }
-                for (int i = indiceInicio; i < muestras.size(); i++) {
-                    int_proceso_vars_data m = muestras.get(i);
-                    serie.add(m.getTiempo(), m.getValor(), false);
+    public void agregarPuntos(List<double[]> puntos) {
+        if (puntos == null || puntos.isEmpty()) {
+            return;
+        }
+        for (double[] punto : puntos) {
+            // Si una nueva corrida de simulacion reinicia el reloj en t=0, limpiar antes de trazar
+            if (serie.getItemCount() > 0) {
+                double ultimoT = serie.getX(serie.getItemCount() - 1).doubleValue();
+                if (punto[0] < ultimoT) {
+                    serie.clear();
                 }
             }
-        } finally {
-            serie.setNotify(true);
+            serie.add(punto[0], punto[1], false);
         }
+        serie.fireSeriesChanged();
     }
 
-    /**
-     * Cambia el titulo visible de la grafica al conmutar de canal.
-     *
-     * @param nuevoTitulo Nombre del canal seleccionado.
-     */
     public void cambiarTitulo(String nuevoTitulo) {
         this.tituloVisible = nuevoTitulo;
         this.grafica.setTitle(nuevoTitulo);
     }
 
-    /**
-     * Limpia todos los puntos de la serie actual.
-     */
     public void limpiar() {
         serie.clear();
     }
 
-    /**
-     * Retorna una copia de los pares (tiempo, valor) actualmente visibles en la
-     * grafica.
-     *
-     * @return Lista de arreglos double[]{tiempo, valor}.
-     */
+    public int getCantidadPuntos() {
+        return serie.getItemCount();
+    }
+
     public List<double[]> getPuntosVisibles() {
-        List<double[]> puntos = new ArrayList<>(serie.getItemCount());
+        Range visible = grafica.getXYPlot().getDomainAxis().getRange();
+        List<double[]> puntos = new ArrayList<>();
         for (int i = 0; i < serie.getItemCount(); i++) {
-            puntos.add(new double[]{serie.getX(i).doubleValue(), serie.getY(i).doubleValue()});
+            double t = serie.getX(i).doubleValue();
+            if (visible.contains(t)) {
+                puntos.add(new double[]{t, serie.getY(i).doubleValue()});
+            }
         }
         return puntos;
     }

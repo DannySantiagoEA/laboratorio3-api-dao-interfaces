@@ -13,23 +13,18 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
 /**
- * Panel principal de visualizacion de entradas para la GUI del Laboratorio
- * Virtual (HU-08 - Tarea #37).
- * <p>
- * Presenta en tiempo real los valores actuales de las 8 entradas analogicas
- * (CH1..CH8) y las 4 entradas digitales (D1..D4), junto con dos lienzos
- * {@link GraficaTiempo} y sus selectores de canal conectados al controlador
- * DAO.
- * </p>
+ * Panel principal de visualizacion de entradas y control de tiempo de muestreo
+ * para la GUI del Laboratorio Virtual (Tareas #34, #37 y #39).
  *
  * @author Danny Santiago Erazo Agredo
  * @author Brayan Alexis Gomez Castano
  * @author Santiago Gutierrez Reina
- * @version $Revision: 1.0 $ 2026/11/23
+ * @version $Revision: 1.1 $ 2026/11/24
  */
 public class PanelMonitoreoEntradas extends JPanel {
 
@@ -44,6 +39,8 @@ public class PanelMonitoreoEntradas extends JPanel {
 
     private JLabel lblEstadoLectura;
     private JLabel lblResumenDb;
+    private JTextField txtTiempoMuestreo;
+    private JButton btnAplicarMuestreo;
     private JButton btnPausarReanudar;
 
     private final JLabel[] lblValoresAnalogicos = new JLabel[NUM_ANALOGICAS];
@@ -63,7 +60,7 @@ public class PanelMonitoreoEntradas extends JPanel {
         setBackground(new Color(243, 246, 250));
         setBorder(BorderFactory.createEmptyBorder(12, 14, 12, 14));
 
-        // 1. Barra superior: estado de lectura periodica DAO y boton Pausar/Reanudar
+        // 1. Barra superior: estado DAO + control tiempo_muestreo (#34) + boton Pausar/Reanudar
         JPanel barraEstado = new JPanel(new BorderLayout(10, 0));
         barraEstado.setBackground(Color.WHITE);
         barraEstado.setBorder(BorderFactory.createCompoundBorder(
@@ -71,10 +68,10 @@ public class PanelMonitoreoEntradas extends JPanel {
                 BorderFactory.createEmptyBorder(8, 12, 8, 12)
         ));
 
-        JPanel panelIzqEstado = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 0));
+        JPanel panelIzqEstado = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         panelIzqEstado.setOpaque(false);
 
-        lblEstadoLectura = new JLabel("Estado DAO: Inicializando lectura periodica...");
+        lblEstadoLectura = new JLabel("Estado DAO: Inicializando lectura incremental...");
         lblEstadoLectura.setFont(new Font("Segoe UI", Font.BOLD, 13));
         lblEstadoLectura.setForeground(new Color(24, 58, 107));
 
@@ -86,6 +83,29 @@ public class PanelMonitoreoEntradas extends JPanel {
         panelIzqEstado.add(new JLabel("|"));
         panelIzqEstado.add(lblResumenDb);
 
+        JPanel panelControlesDer = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
+        panelControlesDer.setOpaque(false);
+
+        // Control Tarea #34: cambio de tiempo_muestreo -> int_proceso via DAO
+        JLabel lblTs = new JLabel("Ts (ms):");
+        lblTs.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        lblTs.setForeground(new Color(30, 58, 95));
+
+        txtTiempoMuestreo = new JTextField("100", 5);
+        txtTiempoMuestreo.setFont(new Font("Consolas", Font.BOLD, 13));
+        txtTiempoMuestreo.setHorizontalAlignment(SwingConstants.CENTER);
+        txtTiempoMuestreo.setPreferredSize(new Dimension(64, 28));
+
+        btnAplicarMuestreo = new JButton("Aplicar Ts (DB)");
+        btnAplicarMuestreo.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        btnAplicarMuestreo.setBackground(new Color(180, 26, 36));
+        btnAplicarMuestreo.setForeground(Color.WHITE);
+        btnAplicarMuestreo.setFocusPainted(false);
+        btnAplicarMuestreo.setContentAreaFilled(false);
+        btnAplicarMuestreo.setOpaque(true);
+        btnAplicarMuestreo.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnAplicarMuestreo.setBorder(BorderFactory.createEmptyBorder(6, 12, 6, 12));
+
         btnPausarReanudar = new JButton("Pausar Lectura");
         btnPausarReanudar.setFont(new Font("Segoe UI", Font.BOLD, 12));
         btnPausarReanudar.setBackground(new Color(24, 58, 107));
@@ -96,8 +116,13 @@ public class PanelMonitoreoEntradas extends JPanel {
         btnPausarReanudar.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnPausarReanudar.setBorder(BorderFactory.createEmptyBorder(6, 14, 6, 14));
 
+        panelControlesDer.add(lblTs);
+        panelControlesDer.add(txtTiempoMuestreo);
+        panelControlesDer.add(btnAplicarMuestreo);
+        panelControlesDer.add(btnPausarReanudar);
+
         barraEstado.add(panelIzqEstado, BorderLayout.CENTER);
-        barraEstado.add(btnPausarReanudar, BorderLayout.EAST);
+        barraEstado.add(panelControlesDer, BorderLayout.EAST);
 
         // 2. Panel superior de telemetria en vivo (8 Analogicas + 4 Digitales)
         JPanel panelTelemetria12 = new JPanel(new BorderLayout(10, 0));
@@ -155,10 +180,9 @@ public class PanelMonitoreoEntradas extends JPanel {
         JPanel panelGraficas = new JPanel(new GridLayout(1, 2, 12, 0));
         panelGraficas.setOpaque(false);
 
-        // Panel izquierda: Grafica Analogica
         JPanel cardAnalogica = new JPanel(new BorderLayout(0, 8));
         cardAnalogica.setBackground(Color.WHITE);
-        cardAnalogica.setBorder(crearBordeTitulado("Monitor de Senal Analogica (0.0 - 5.0 V)"));
+        cardAnalogica.setBorder(crearBordeTitulado("Monitor de Senal Analogica (0.0 - 5.0 V | Ventana 10 s)"));
 
         JPanel barraSelAnalogica = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 2));
         barraSelAnalogica.setOpaque(false);
@@ -176,10 +200,9 @@ public class PanelMonitoreoEntradas extends JPanel {
         cardAnalogica.add(barraSelAnalogica, BorderLayout.NORTH);
         cardAnalogica.add(contenedorGraficaAnalogica, BorderLayout.CENTER);
 
-        // Panel derecha: Grafica Digital
         JPanel cardDigital = new JPanel(new BorderLayout(0, 8));
         cardDigital.setBackground(Color.WHITE);
-        cardDigital.setBorder(crearBordeTitulado("Monitor de Senal Digital (Nivel Logico 0/1)"));
+        cardDigital.setBorder(crearBordeTitulado("Monitor de Senal Digital (Nivel Logico 0/1 | Ventana 10 s)"));
 
         JPanel barraSelDigital = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 2));
         barraSelDigital.setOpaque(false);
@@ -215,7 +238,7 @@ public class PanelMonitoreoEntradas extends JPanel {
     }
 
     // =========================================================================
-    // API PUBLICA PARA ControladorGraficacionDAO (TAREA #37)
+    // API PUBLICA PARA ControladorGraficacionDAO (TAREAS #34, #37 Y #39)
     // =========================================================================
     public void montarGraficaAnalogica(GraficaTiempo grafica) {
         contenedorGraficaAnalogica.removeAll();
@@ -250,6 +273,19 @@ public class PanelMonitoreoEntradas extends JPanel {
         return Math.max(0, cmbCanalDigital.getSelectedIndex());
     }
 
+    public String getTiempoMuestreoTexto() {
+        return txtTiempoMuestreo.getText().trim();
+    }
+
+    public void setTiempoMuestreoActual(int tsMs) {
+        txtTiempoMuestreo.setText(String.valueOf(tsMs));
+    }
+
+    public void setControlesMuestreoHabilitados(boolean habilitado) {
+        txtTiempoMuestreo.setEnabled(habilitado);
+        btnAplicarMuestreo.setEnabled(habilitado);
+    }
+
     public void addListenerCanalAnalogico(ActionListener listener) {
         cmbCanalAnalogico.addActionListener(listener);
     }
@@ -258,19 +294,15 @@ public class PanelMonitoreoEntradas extends JPanel {
         cmbCanalDigital.addActionListener(listener);
     }
 
+    public void addListenerCambiarMuestreo(ActionListener listener) {
+        btnAplicarMuestreo.addActionListener(listener);
+        txtTiempoMuestreo.addActionListener(listener);
+    }
+
     public void addListenerPausarReanudar(ActionListener listener) {
         btnPausarReanudar.addActionListener(listener);
     }
 
-    /**
-     * Actualiza las 8 tarjetas de voltaje analogico y los 4 indicadores
-     * digitales.
-     *
-     * @param ultimosAnalogicos Arreglo Float[8] (null si el canal no tiene
-     * muestras).
-     * @param ultimosDigitales Arreglo Integer[4] (0, 1 o null si no tiene
-     * muestras).
-     */
     public void actualizarLecturas12Canales(Float[] ultimosAnalogicos, Integer[] ultimosDigitales) {
         for (int i = 0; i < NUM_ANALOGICAS; i++) {
             Float v = (ultimosAnalogicos != null && i < ultimosAnalogicos.length) ? ultimosAnalogicos[i] : null;
@@ -303,7 +335,7 @@ public class PanelMonitoreoEntradas extends JPanel {
     }
 
     public void mostrarErrorSondeo(String mensajeError) {
-        lblEstadoLectura.setText("Error leyendo int_proceso_vars_data");
+        lblEstadoLectura.setText("Error leyendo/actualizando MySQL");
         lblEstadoLectura.setForeground(new Color(214, 48, 49));
         lblResumenDb.setText(mensajeError);
     }
